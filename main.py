@@ -99,7 +99,7 @@ def show_table(data):
     print("-" * 115)
 
 
-def menu_read():
+def sub_menu_read():
     """
     untuk handle pilihan submenu read
     """
@@ -110,7 +110,7 @@ def menu_read():
         print("1. Tampilkan Semua Koleksi")
         print("2. Cari Mobil Berdasarkan ID")
         print("3. Filter Berdasarkan Kategori (JDM/USDM/EDM)")
-        print("4. Kembali ke Menu Utama")
+        print("4. Kembali ke Menu Menu")
         print("-"*35)
         
         sub_pilihan = input("Pilih menu (1-4): ")
@@ -122,7 +122,7 @@ def menu_read():
             target_id = input("\nMasukkan ID Mobil yang dicari (Contoh: JDM-001): ").upper()
 
             if target_id in data_mobil:
-                #kita buat temp dictionary baru untuk menampilkan 1 mobil aja
+                #buat temp dictionary baru untuk menampilkan 1 mobil aja
                 single_car = {}
                 single_car[target_id] = data_mobil[target_id]
                 show_table(single_car)
@@ -152,6 +152,121 @@ def menu_read():
             print("\n[ERROR] Pilihan tidak valid! Masukkan angka 1 sampai 4.")
 
 
+def generate_id(kategori):
+    """
+    Automatically generates car_id
+    misal kalau JDM-001 and JDM-002 exist, akan return 'JDM-003'
+    """
+    #determine prefixnya
+    if kategori == "JDM":
+        prefix = "JDM"
+    elif kategori == "USDM":
+        prefix = "USD"
+    else:
+        prefix = "EDM"
+        
+    max_num = 0
+    
+    for i in data_mobil.keys():
+        if i.startswith(prefix):
+            try:
+                num_part = int(i.split("-")[1]) #split nomornya
+                if num_part > max_num:
+                    max_num = num_part
+            except (IndexError, ValueError):
+                continue #skip format anex just in case
+                
+    # +1 untuk next id
+    next_num = max_num + 1
+    
+    #return dengan 3-digit zero padding
+    return f"{prefix}-{next_num:03d}"
+
+
+def sub_menu_create():
+    """
+    untuk handle sub menu create
+    """
+    while True:
+        print("\n" + "-"*35)
+        print("     SUB-MENU TAMBAH UNIT BARU     ")
+        print("-"*35)
+        print("1. Daftarkan Mobil Baru")
+        print("2. Kembali ke Main Menu")
+        print("-"*35)
+        
+        sub_pilihan = input("Pilih menu (1-2): ").strip()
+        
+        if sub_pilihan == "1":
+            print("\n>>> INPUT DATA ACQUISITION BARU <<<")
+            
+            #validate kategori sesuai dengan yang tersedia
+            while True:
+                kategori = input("Masukkan Kategori (JDM / USDM / EDM): ").strip().upper()
+                if kategori in ["JDM", "USDM", "EDM"]:
+                    break
+                print("[ERROR] Kategori tidak valid! Wajib memilih JDM, USDM, atau EDM.")
+            
+            #generate new id
+            new_id = generate_id(kategori)
+            print(f"ID Mobil Otomatis Dibuat: {new_id}")
+            
+            
+            nama_mobil = input("Masukkan Nama/Model Mobil: ").strip()
+            mesin = input("Masukkan Tipe/Seri Mesin: ").strip()
+            
+            #validate tahun
+            while True:
+                try:
+                    tahun = int(input("Masukkan Tahun Perakitan: ").strip())
+                    if 1900 <= tahun <= 2026:
+                        break
+                    print("[ERROR] Tahun harus masuk akal (1900 - 2026)!")
+                except ValueError:
+                    print("[ERROR] Input tidak valid! Tahun wajib berupa angka bulat.")
+            
+            #validate harga
+            while True:
+                try:
+                    harga = float(input("Masukkan Harga Unit (IDR): ").strip())
+                    if harga > 0:
+                        break
+                    print("[ERROR] Harga harus lebih besar dari Rp 0!")
+                except ValueError:
+                    print("[ERROR] Input tidak valid! Harga wajib berupa angka nominal.")
+            
+            #summary input
+            print("\n--- RINGKASAN DATA UNIT BARU ---")
+            print(f"ID Mobil    : {new_id} (Generated)")
+            print(f"Kategori    : {kategori}")
+            print(f"Nama Mobil  : {nama_mobil}")
+            print(f"Tahun       : {tahun}")
+            print(f"Mesin       : {mesin}")
+            print(f"Harga       : Rp {harga:,.2f}")
+            print("-" * 32)
+            
+            konfirmasi = input("Apakah data di atas sudah benar & ingin disimpan? (Y/N): ").upper()
+            
+            if konfirmasi == "Y":
+                data_mobil[new_id] = {
+                    "kategori": kategori,
+                    "nama_mobil": nama_mobil,
+                    "tahun": tahun,
+                    "mesin": mesin,
+                    "harga": harga,
+                    "status_unit": "Available"
+                }
+                print(f"\n[SUCCESS] Unit '{nama_mobil}' dengan ID '{new_id}' berhasil didaftarkan!")
+            else:
+                print("\n[Batal] Pendaftaran unit baru dibatalkan oleh operator.")
+            
+        elif sub_pilihan == "2":
+            print("\nKembali ke Main Menu...")
+            break
+        else:
+            print("\n[ERROR] Pilihan tidak valid! Masukkan angka 1 atau 2.")
+
+
 
 while True:
     main_menu()
@@ -159,13 +274,17 @@ while True:
     usr_inp = input("Masukkan menu yang ingin dijalankan (1-5): ")
     
     if usr_inp == "1":
-        menu_read()
+        sub_menu_read()
+
     elif usr_inp == "2":
-        pass
+        sub_menu_create()
+
     elif usr_inp == "3":
         pass
+
     elif usr_inp == "4":
         pass
+
     elif usr_inp == "5":
         print("\nTerima kasih telah menggunakan sistem showroom kami. Goodbye!")
         break
