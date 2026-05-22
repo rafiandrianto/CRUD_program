@@ -198,8 +198,6 @@ def sub_menu_create():
         sub_pilihan = input("Pilih menu (1-2): ").strip()
         
         if sub_pilihan == "1":
-            print("\n>>> INPUT DATA ACQUISITION BARU <<<")
-            
             #validate kategori sesuai dengan yang tersedia
             while True:
                 kategori = input("Masukkan Kategori (JDM / USDM / EDM): ").strip().upper()
@@ -245,7 +243,7 @@ def sub_menu_create():
             print(f"Harga       : Rp {harga:,.2f}")
             print("-" * 32)
             
-            konfirmasi = input("Apakah data di atas sudah benar & ingin disimpan? (Y/N): ").upper()
+            konfirmasi = input("Yakin mau disimpan? (Y/N): ").upper()
             
             if konfirmasi == "Y":
                 data_mobil[new_id] = {
@@ -267,6 +265,147 @@ def sub_menu_create():
             print("\n[ERROR] Pilihan tidak valid! Masukkan angka 1 atau 2.")
 
 
+def update():
+    """
+    update data yang sudah ada
+    """
+    while True:
+        print("\n")
+        print("-"*35)
+        print("     SUB-MENU PERBARUI DATA     ")
+        print("-"*35)
+        print("1. Ubah Atribut Data Mobil")
+        print("2. Kembali ke Main Menu")
+        print("-"*35)
+        
+        sub_pilihan = input("Pilih menu (1-2): ").strip()
+        
+        if sub_pilihan == "1":
+
+            target_id = input("Masukkan ID Mobil yang ingin diupdate: ").strip().upper()
+            
+            #check if the car exist
+            if target_id not in data_mobil:
+                print(f"\n[ERROR] Mobil dengan ID '{target_id}' tidak terdaftar di sistem!")
+                continue
+            
+            
+            car = data_mobil[target_id]
+            
+            print(f"\n--- CURRENT DATA UNTUK ID {target_id} ---")
+            print(f"1. Nama Mobil : {car['nama_mobil']}")
+            print(f"2. Tahun      : {car['tahun']}")
+            print(f"3. Mesin      : {car['mesin']}")
+            print(f"4. Harga      : Rp {car['harga']:,.2f}")
+            print(f"5. Status Unit: {car['status_unit']}")
+            print("-" * 35)
+            
+            pilihan_field = input("Pilih nomor atribut yang ingin diubah (1-5): ").strip()
+            
+            #to track the field name and the new value input
+            field_key = ""
+            new_value = None
+            
+            if pilihan_field == "1":
+                field_key = "nama_mobil"
+                new_value = input("Masukkan Nama/Model Mobil baru: ").strip()
+                
+            elif pilihan_field == "2":
+                field_key = "tahun"
+                while True:
+                    try:
+                        new_value = int(input("Masukkan Tahun Perakitan baru: ").strip())
+                        if 1900 <= new_value <= 2026:
+                            break
+                        print("[ERROR] Tahun harus masuk akal (1900 - 2026)!")
+                    except ValueError:
+                        print("[ERROR] Input tidak valid! Tahun wajib berupa angka bulat.")
+                        
+            elif pilihan_field == "3":
+                field_key = "mesin"
+                new_value = input("Masukkan Tipe/Seri Mesin baru: ").strip()
+                
+            elif pilihan_field == "4":
+                field_key = "harga"
+                while True:
+                    try:
+                        new_value = float(input("Masukkan Harga Unit baru (IDR): ").strip())
+                        if new_value > 0:
+                            break
+                        print("[ERROR] Harga harus lebih besar dari Rp 0!")
+                    except ValueError:
+                        print("[ERROR] Input tidak valid! Harga wajib berupa angka nominal.")
+                        
+            elif pilihan_field == "5":
+                field_key = "status_unit"
+                while True:
+                    new_value = input("Masukkan Status baru (Available / Reserved / Sold): ").strip().capitalize()
+                    if new_value in ["Available", "Reserved", "Sold"]:
+                        break
+                    print("[ERROR] Status tidak valid! Pilih Available, Reserved, atau Sold.")
+            else:
+                print("\n[ERROR] Pilihan atribut tidak tersedia!")
+                continue
+                
+            #validate jika mau diubah
+            print(f"\nPerubahan Terdeteksi: Atribut '{field_key}' akan diganti menjadi '{new_value}'")
+            konfirmasi = input("Apakah Anda yakin ingin menyimpan perubahan ini? (Y/N): ").strip().upper()
+            
+            if konfirmasi == "Y":
+                #overwrite key yang dipilih
+                data_mobil[target_id][field_key] = new_value
+                print(f"\n[SUCCESS] Data mobil ID '{target_id}' berhasil diperbarui!")
+            else:
+                print("\n[Batal] Update data dibatalkan oleh operator.")
+                
+        elif sub_pilihan == "2":
+            print("\nKembali ke Main Menu...")
+            break
+        else:
+            print("\n[ERROR] Pilihan tidak valid! Masukkan angka 1 atau 2.")
+
+
+def delete():
+    """
+    delete data
+    """
+    while True:
+        print("\n" + "-"*35)
+        print("     SUB-MENU HAPUS DATA UNIT     ")
+        print("-"*35)
+        print("1. Hapus Unit Mobil Permanent")
+        print("2. Kembali ke Main Menu")
+        print("-"*35)
+        
+        sub_pilihan = input("Pilih menu (1-2): ").strip()
+        
+        if sub_pilihan == "1":
+
+            target_id = input("Masukkan ID Mobil yang ingin dihapus: ").strip().upper()
+            
+            # vakidate if id exists
+            if target_id not in data_mobil:
+                print(f"\n[ERROR] Mobil dengan ID '{target_id}' tidak ditemukan di sistem!")
+                continue
+            
+            car = data_mobil[target_id]
+            print(f"\n[PERINGATAN] Anda akan menghapus data: {car['nama_mobil']} ({target_id})")
+            
+            #double check
+            konfirmasi = input("Tindakan ini tidak bisa dibatalkan! Lanjutkan? (Y/N): ").strip().upper()
+            
+            if konfirmasi == "Y":
+                #remove key value pake del
+                del data_mobil[target_id]
+                print(f"\n[SUCCESS] Record dengan ID '{target_id}' berhasil dihapus")
+            else:
+                print("\n[Batal] Penghapusan unit dibatalkan oleh operator")
+                
+        elif sub_pilihan == "2":
+            print("\nKembali ke Main Menu...")
+            break
+        else:
+            print("\n[ERROR] Pilihan tidak valid! Masukkan angka 1 atau 2.")
 
 while True:
     main_menu()
@@ -280,10 +419,10 @@ while True:
         sub_menu_create()
 
     elif usr_inp == "3":
-        pass
+        update()
 
     elif usr_inp == "4":
-        pass
+        delete()
 
     elif usr_inp == "5":
         print("\nTerima kasih telah menggunakan sistem showroom kami. Goodbye!")
