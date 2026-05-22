@@ -389,15 +389,15 @@ def delete():
                 continue
             
             car = data_mobil[target_id]
-            print(f"\n[PERINGATAN] Anda akan menghapus data: {car['nama_mobil']} ({target_id})")
+            print(f"\n[WARNING] Anda akan menghapus data: {car['nama_mobil']} ({target_id})")
             
             #double check
-            konfirmasi = input("Tindakan ini tidak bisa dibatalkan! Lanjutkan? (Y/N): ").strip().upper()
+            konfirmasi = input("Apakah anda yakin? (Y/N): ").strip().upper()
             
             if konfirmasi == "Y":
-                #remove key value pake del
-                del data_mobil[target_id]
-                print(f"\n[SUCCESS] Record dengan ID '{target_id}' berhasil dihapus")
+                #remove key value pair
+                removed_car = data_mobil.pop(target_id)
+                print(f"\n[SUCCESS] Unit '{removed_car['nama_mobil']} ({target_id})' telah dihapus dari sistem!")
             else:
                 print("\n[Batal] Penghapusan unit dibatalkan oleh operator")
                 
