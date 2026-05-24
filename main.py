@@ -5,7 +5,18 @@
 # JCDS - 33
 
 
-# /************************************/
+class Color:
+    RED = '\033[91m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    BLUE = '\033[94m'
+    CYAN = '\033[96m'
+    
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    
+    #reset back to normal terminal text
+    RESET = '\033[0m'
 
 # /===== Data Model =====/
 # The primary data collection containing our current inventory
@@ -61,57 +72,59 @@ data_mobil = {
 }
 
 
-# /===== Feature Program =====/
 def main_menu():
     """
-    print layout main menu sistemnya
+    printing layout for the main menu
     """
-    print("\n" + "="*50)
+    print("\n")
+    print(f"{Color.CYAN}{Color.BOLD}" + "="*50)
     print(" "*13 + "WJKSN SHOWROOM DATABASE")
-    print("="*50)
-    print("1. Lihat Showroom Inventory")
-    print("2. Tambah Koleksi Baru")
-    print("3. Perbarui Data Mobil")
-    print("4. Hapus Unit dari Sistem")
-    print("5. Exit Program")
-    print("="*50)
+    print("="*50 + f"{Color.RESET}")
+    print(f"{Color.BLUE}1.{Color.RESET} Lihat Showroom Inventory")
+    print(f"{Color.BLUE}2.{Color.RESET} Tambah Koleksi Baru")
+    print(f"{Color.BLUE}3.{Color.RESET} Perbarui Data Mobil")
+    print(f"{Color.BLUE}4.{Color.RESET} Hapus Unit dari Sistem")
+    print(f"{Color.BLUE}5.{Color.RESET} Exit Program")
+    print(f"{Color.CYAN}{Color.BOLD}" + "="*50 + f"{Color.RESET}")
 
 
 def show_table(data):
     """
-    helper function untuk print hasil sub menu
+    helper function for printing the results
     """
     if not data:
-        print("\n Tidak ada data mobil yang cocok dengan kriteria.")
+        print(f"\n {Color.YELLOW} Tidak ada data mobil yang cocok dengan kriteria {Color.RESET}")
         return
 
     print("\n")
-    print("-" * 115)
-    print(f"{'ID':<10} | {'Kategori':<10} | {'Nama Mobil':<30} | {'Tahun':<6} | {'Mesin':<15} | {'Harga (IDR)':<18} | {'Status':<10}")
-    print("-" * 115)
+    print(f"{Color.CYAN}" + "-" * 115 + f"{Color.RESET}")
+    print(f"{'ID':<10} {Color.CYAN}|{Color.RESET} {'Kategori':<10} {Color.CYAN}|{Color.RESET} {'Nama Mobil':<30} {Color.CYAN}|{Color.RESET} {'Tahun':<6} {Color.CYAN}|{Color.RESET} {'Mesin':<15} {Color.CYAN}|{Color.RESET} {'Harga (IDR)':<19} {Color.CYAN}|{Color.RESET} {'Status':<10}")
+    print(f"{Color.CYAN}" + "-" * 115 + f"{Color.RESET}")
     
-    for car_id, info in data.items():
+    for key, value in data.items():
 
-        harga_format = f"Rp {info['harga']:,.2f}"
+        harga_format = f"Rp {value['harga']:,.2f}"
         
-        print(f"{car_id:<10} | {info['kategori']:<10} | {info['nama_mobil']:<30} | {info['tahun']:<6} | {info['mesin']:<15} | {harga_format:<18} | {info['status_unit']:<10}")
+        print(f"{key:<10} {Color.CYAN}|{Color.RESET} {value['kategori']:<10} {Color.CYAN}|{Color.RESET} {value['nama_mobil']:<30} {Color.CYAN}|{Color.RESET} {value['tahun']:<6} {Color.CYAN}|{Color.RESET} {value['mesin']:<15} {Color.CYAN}|{Color.RESET} {harga_format:<18} {Color.CYAN}|{Color.RESET} {value['status_unit']:<10}")
     
-    print("-" * 115)
+    print(f"{Color.CYAN}" + "-" * 115 + f"{Color.RESET}")
 
 
-def sub_menu_read():
+def read():
     """
-    untuk handle pilihan submenu read
+    to show the data stored in the system
     """
     while True:
-        print("\n" + "-"*35)
+        print("\n")
+        print(f"{Color.CYAN}{Color.BOLD}"+ "-"*35)
         print("    SUB-MENU VIEW SHOWROOM STOCK    ")
-        print("-"*35)
-        print("1. Tampilkan Semua Koleksi")
-        print("2. Cari Mobil Berdasarkan ID")
-        print("3. Filter Berdasarkan Kategori (JDM/USDM/EDM)")
-        print("4. Kembali ke Menu Menu")
-        print("-"*35)
+        print("-"*35 + f"{Color.RESET}")
+        print(f"{Color.BLUE}1.{Color.RESET} Tampilkan Semua Koleksi")
+        print(f"{Color.BLUE}2.{Color.RESET} Cari Mobil Berdasarkan ID")
+        print(f"{Color.BLUE}3.{Color.RESET} Filter Berdasarkan Kategori (JDM/USDM/EDM)")
+        print(f"{Color.BLUE}4.{Color.RESET} Filter Berdasarkan Keyword Mobil / Mesin")
+        print(f"{Color.BLUE}5.{Color.RESET} Kembali ke Menu Menu")
+        print(f"{Color.CYAN}{Color.BOLD}" + "-"*35 + f"{Color.RESET}")
         
         sub_pilihan = input("Pilih menu (1-4): ")
         
@@ -122,20 +135,20 @@ def sub_menu_read():
             target_id = input("\nMasukkan ID Mobil yang dicari (Contoh: JDM-001): ").upper()
 
             if target_id in data_mobil:
-                #buat temp dictionary baru untuk menampilkan 1 mobil aja
+                #creating temp dictionary for showing 1 car only
                 single_car = {}
                 single_car[target_id] = data_mobil[target_id]
                 show_table(single_car)
 
             else:
-                print(f"\n[ERROR] Mobil dengan ID '{target_id}' tidak ditemukan di sistem!")
+                print(f"\n{Color.RED}[ERROR] Mobil dengan ID '{target_id}' tidak ditemukan {Color.RESET}")
                 
         elif sub_pilihan == "3":
             target_kat = input("Masukkan Kategori Filter (JDM / USDM / EDM): ").upper()
 
             if target_kat in ["JDM", "USDM", "EDM"]:
 
-                #dictionary baru untuk memfilter per kategori yang terpilih
+                #temp dictionary for saving chosen category
                 filtered_cars = {}
                 for car_id, info in data_mobil.items():
                     if info['kategori'] == target_kat:
@@ -143,21 +156,43 @@ def sub_menu_read():
                 show_table(filtered_cars)
 
             else:
-                print("\n[ERROR] Kategori tidak valid! Pilih antara JDM, USDM, atau EDM.")
+                print(f"\n{Color.RED}[ERROR] Kategori tidak valid! Pilih antara JDM, USDM, atau EDM {Color.RESET}")
                 
         elif sub_pilihan == "4":
+            keyword = input("\nMasukkan kata kunci pencarian (Nama Mobil / Seri Mesin): ").strip().lower()
+            
+            #validate
+            if not keyword:
+                print(f"{Color.RED}\n[ERROR] Keyword tidak boleh kosong!{Color.RESET}")
+                continue
+                
+            filtered_cars = {}
+            
+            for key, value in data_mobil.items():
+
+                nama_scan = value['nama_mobil'].lower()
+                mesin_scan = value['mesin'].lower()
+
+                
+                #check
+                if keyword in nama_scan or keyword in mesin_scan:
+                    filtered_cars[key] = value
+            
+            show_table(filtered_cars)
+                
+        elif sub_pilihan == "5":
             print("\nKembali ke Main Menu...")
             break
         else:
-            print("\n[ERROR] Pilihan tidak valid! Masukkan angka 1 sampai 4.")
+            print(f"{Color.RED}\n[ERROR] Pilihan tidak valid! {Color.RESET}")
 
 
 def generate_id(kategori):
     """
     Automatically generates car_id
-    misal kalau JDM-001 and JDM-002 exist, akan return 'JDM-003'
+    ex if JDM-001 and JDM-002 exist, will return 'JDM-003'
     """
-    #determine prefixnya
+    #determine prefix
     if kategori == "JDM":
         prefix = "JDM"
     elif kategori == "USDM":
@@ -170,41 +205,50 @@ def generate_id(kategori):
     for i in data_mobil.keys():
         if i.startswith(prefix):
             try:
-                num_part = int(i.split("-")[1]) #split nomornya
+                num_part = int(i.split("-")[1]) #split the number
                 if num_part > max_num:
                     max_num = num_part
             except (IndexError, ValueError):
                 continue #skip format anex just in case
                 
-    # +1 untuk next id
+    # +1 for the next id
     next_num = max_num + 1
     
     #return dengan 3-digit zero padding
     return f"{prefix}-{next_num:03d}"
 
 
-def sub_menu_create():
+def create():
     """
-    untuk handle sub menu create
+    to create new data for the system
     """
     while True:
-        print("\n" + "-"*35)
-        print("     SUB-MENU TAMBAH UNIT BARU     ")
-        print("-"*35)
-        print("1. Daftarkan Mobil Baru")
-        print("2. Kembali ke Main Menu")
-        print("-"*35)
+        print("\n" + f"{Color.CYAN}" + "-"*35 + f"{Color.RESET}")
+        print("     SUB-MENU TAMBAH UNIT BARU")
+        print(f"{Color.CYAN}" + "-"*35 + f"{Color.RESET}")
+        print(f"{Color.BLUE}1.{Color.RESET} Daftarkan Mobil Baru")
+        print(f"{Color.BLUE}2.{Color.RESET} Kembali ke Main Menu")
+        print(f"{Color.CYAN}" + "-"*35 + f"{Color.RESET}")
         
         sub_pilihan = input("Pilih menu (1-2): ").strip()
         
         if sub_pilihan == "1":
-            #validate kategori sesuai dengan yang tersedia
+            #validate 
             while True:
                 kategori = input("Masukkan Kategori (JDM / USDM / EDM): ").strip().upper()
+
+                if kategori == "0": #cancel
+                    break
+
                 if kategori in ["JDM", "USDM", "EDM"]:
                     break
-                print("[ERROR] Kategori tidak valid! Wajib memilih JDM, USDM, atau EDM.")
+
+                print(f"{Color.YELLOW}\n[WARNING] Kategori tidak valid! Wajib memilih JDM, USDM, atau EDM {Color.RESET}\n")
             
+            if kategori == "0":
+                print(f"\n{Color.YELLOW}[Batal] Proses dibatalkan. Kembali ke menu...{Color.RESET}")
+                continue
+
             #generate new id
             new_id = generate_id(kategori)
             print(f"ID Mobil Otomatis Dibuat: {new_id}")
@@ -213,37 +257,37 @@ def sub_menu_create():
             nama_mobil = input("Masukkan Nama/Model Mobil: ").strip()
             mesin = input("Masukkan Tipe/Seri Mesin: ").strip()
             
-            #validate tahun
+            #validate year
             while True:
                 try:
-                    tahun = int(input("Masukkan Tahun Perakitan: ").strip())
+                    tahun = int(input("Masukkan Tahun Pembuatan: ").strip())
                     if 1900 <= tahun <= 2026:
                         break
-                    print("[ERROR] Tahun harus masuk akal (1900 - 2026)!")
+                    print(f"{Color.YELLOW}[WARNING] Tahun harus masuk akal (1900 - 2026)! {Color.RESET}")
                 except ValueError:
-                    print("[ERROR] Input tidak valid! Tahun wajib berupa angka bulat.")
+                    print(f"{Color.YELLOW}[WARNING] Input tidak valid! Tahun wajib berupa angka bulat {Color.RESET}")
             
-            #validate harga
+            #validate price
             while True:
                 try:
                     harga = float(input("Masukkan Harga Unit (IDR): ").strip())
                     if harga > 0:
                         break
-                    print("[ERROR] Harga harus lebih besar dari Rp 0!")
+                    print(f"{Color.YELLOW}[WARNING] Harga harus lebih besar dari Rp 0{Color.RESET}")
                 except ValueError:
-                    print("[ERROR] Input tidak valid! Harga wajib berupa angka nominal.")
+                    print(f"{Color.YELLOW}[WARNING] Input tidak valid! Harga wajib berupa angka nominal{Color.RESET}")
             
             #summary input
-            print("\n--- RINGKASAN DATA UNIT BARU ---")
+            print(f"{Color.CYAN}\n--- RINGKASAN DATA UNIT BARU ---{Color.RESET}")
             print(f"ID Mobil    : {new_id} (Generated)")
             print(f"Kategori    : {kategori}")
             print(f"Nama Mobil  : {nama_mobil}")
             print(f"Tahun       : {tahun}")
             print(f"Mesin       : {mesin}")
             print(f"Harga       : Rp {harga:,.2f}")
-            print("-" * 32)
+            print(f"{Color.CYAN}" + "-" * 32 + f"{Color.RESET}")
             
-            konfirmasi = input("Yakin mau disimpan? (Y/N): ").upper()
+            konfirmasi = input(f"Yakin mau disimpan? ({Color.GREEN}Y{Color.RESET}/{Color.RED}N{Color.RESET}): ").upper()
             
             if konfirmasi == "Y":
                 data_mobil[new_id] = {
@@ -254,29 +298,29 @@ def sub_menu_create():
                     "harga": harga,
                     "status_unit": "Available"
                 }
-                print(f"\n[SUCCESS] Unit '{nama_mobil}' dengan ID '{new_id}' berhasil didaftarkan!")
+                print(f"\n{Color.GREEN}[SUCCESS] Unit '{nama_mobil}' dengan ID '{new_id}' berhasil didaftarkan!{Color.RESET}")
             else:
-                print("\n[Batal] Pendaftaran unit baru dibatalkan oleh operator.")
+                print(f"\n{Color.RED}[Batal] Pendaftaran unit baru dibatalkan oleh operator {Color.RESET}")
             
         elif sub_pilihan == "2":
             print("\nKembali ke Main Menu...")
             break
         else:
-            print("\n[ERROR] Pilihan tidak valid! Masukkan angka 1 atau 2.")
+            print(f"\n{Color.YELLOW}[WARNING] Pilihan tidak valid! Masukkan angka 1 atau 2{Color.RESET}")
 
 
 def update():
     """
-    update data yang sudah ada
+    to update existinf data in the system
     """
     while True:
         print("\n")
-        print("-"*35)
+        print(f"{Color.CYAN}" + "-"*35)
         print("     SUB-MENU PERBARUI DATA     ")
-        print("-"*35)
-        print("1. Ubah Atribut Data Mobil")
-        print("2. Kembali ke Main Menu")
-        print("-"*35)
+        print("-"*35 + f"{Color.RESET}")
+        print(f"{Color.BLUE}1.{Color.RESET} Ubah Atribut Data Mobil")
+        print(f"{Color.BLUE}2.{Color.RESET} Kembali ke Main Menu")
+        print(f"{Color.CYAN}" + "-"*35 + f"{Color.RESET}")
         
         sub_pilihan = input("Pilih menu (1-2): ").strip()
         
@@ -284,21 +328,25 @@ def update():
 
             target_id = input("Masukkan ID Mobil yang ingin diupdate: ").strip().upper()
             
+            if target_id == "0": #cancel
+                print(f"\n{Color.RED}[Batal] Proses dibatalkan. Kembali ke menu... {Color.RESET} ")
+                continue
+
             #check if the car exist
             if target_id not in data_mobil:
-                print(f"\n[ERROR] Mobil dengan ID '{target_id}' tidak terdaftar di sistem!")
+                print(f"\n{Color.RED} [ERROR] Mobil dengan ID '{target_id}' tidak terdaftar di sistem! {Color.RESET}")
                 continue
             
             
             car = data_mobil[target_id]
             
-            print(f"\n--- CURRENT DATA UNTUK ID {target_id} ---")
+            print(f"\n{Color.CYAN}--- CURRENT DATA UNTUK ID {target_id} ---{Color.RESET}")
             print(f"1. Nama Mobil : {car['nama_mobil']}")
             print(f"2. Tahun      : {car['tahun']}")
             print(f"3. Mesin      : {car['mesin']}")
             print(f"4. Harga      : Rp {car['harga']:,.2f}")
             print(f"5. Status Unit: {car['status_unit']}")
-            print("-" * 35)
+            print(f"{Color.CYAN}" + "-" * 35 + f"{Color.RESET}")
             
             pilihan_field = input("Pilih nomor atribut yang ingin diubah (1-5): ").strip()
             
@@ -317,9 +365,9 @@ def update():
                         new_value = int(input("Masukkan Tahun Perakitan baru: ").strip())
                         if 1900 <= new_value <= 2026:
                             break
-                        print("[ERROR] Tahun harus masuk akal (1900 - 2026)!")
+                        print(f"{Color.YELLOW}[WARNING] Tahun harus masuk akal (1900 - 2026)! {Color.RESET}")
                     except ValueError:
-                        print("[ERROR] Input tidak valid! Tahun wajib berupa angka bulat.")
+                        print(f"{Color.YELLOW}[WARNING] Input tidak valid! Tahun wajib berupa angka bulat {Color.RESET}")
                         
             elif pilihan_field == "3":
                 field_key = "mesin"
@@ -332,9 +380,9 @@ def update():
                         new_value = float(input("Masukkan Harga Unit baru (IDR): ").strip())
                         if new_value > 0:
                             break
-                        print("[ERROR] Harga harus lebih besar dari Rp 0!")
+                        print(f"{Color.YELLOW}[WARNING] Harga harus lebih besar dari Rp 0!{Color.RESET}")
                     except ValueError:
-                        print("[ERROR] Input tidak valid! Harga wajib berupa angka nominal.")
+                        print(f"{Color.YELLOW}[WARNING] Input tidak valid! Harga wajib berupa angka nominal{Color.RESET}")
                         
             elif pilihan_field == "5":
                 field_key = "status_unit"
@@ -342,40 +390,40 @@ def update():
                     new_value = input("Masukkan Status baru (Available / Reserved / Sold): ").strip().capitalize()
                     if new_value in ["Available", "Reserved", "Sold"]:
                         break
-                    print("[ERROR] Status tidak valid! Pilih Available, Reserved, atau Sold.")
+                    print(f"{Color.YELLOW}[WARNING] Status tidak valid! Pilih Available, Reserved, atau Sold{Color.RESET}")
             else:
-                print("\n[ERROR] Pilihan atribut tidak tersedia!")
+                print(f"\n{Color.YELLOW}[WARNING] Pilihan atribut tidak tersedia!{Color.RESET}")
                 continue
                 
-            #validate jika mau diubah
+            #validate
             print(f"\nPerubahan Terdeteksi: Atribut '{field_key}' akan diganti menjadi '{new_value}'")
-            konfirmasi = input("Apakah Anda yakin ingin menyimpan perubahan ini? (Y/N): ").strip().upper()
+            konfirmasi = input(f"Apakah Anda yakin ingin menyimpan perubahan ini? ({Color.GREEN}Y{Color.RESET}/{Color.RED}N{Color.RESET}): ").strip().upper()
             
             if konfirmasi == "Y":
-                #overwrite key yang dipilih
+                #overwrite chosen key
                 data_mobil[target_id][field_key] = new_value
-                print(f"\n[SUCCESS] Data mobil ID '{target_id}' berhasil diperbarui!")
+                print(f"\n{Color.GREEN}[SUCCESS] Data mobil ID '{target_id}' berhasil diperbarui! {Color.RESET}")
             else:
-                print("\n[Batal] Update data dibatalkan oleh operator.")
+                print(f"\n{Color.RED}[Batal] Update data dibatalkan {Color.RESET}")
                 
         elif sub_pilihan == "2":
             print("\nKembali ke Main Menu...")
             break
         else:
-            print("\n[ERROR] Pilihan tidak valid! Masukkan angka 1 atau 2.")
+            print(f"\n{Color.YELLOW}[WARNING] Pilihan tidak valid! Masukkan angka 1 atau 2{Color.RESET}")
 
 
 def delete():
     """
-    delete data
+    to delete existing data in the system
     """
     while True:
-        print("\n" + "-"*35)
-        print("     SUB-MENU HAPUS DATA UNIT     ")
-        print("-"*35)
-        print("1. Hapus Unit Mobil Permanent")
-        print("2. Kembali ke Main Menu")
-        print("-"*35)
+        print("\n" + f"{Color.CYAN}" + "-"*35)
+        print("     SUB-MENU HAPUS DATA UNIT")
+        print("-"*35 + f"{Color.RESET}")
+        print(f"{Color.BLUE}1.{Color.RESET} Hapus Unit Mobil Permanent")
+        print(f"{Color.BLUE}2.{Color.RESET} Kembali ke Main Menu")
+        print(f"{Color.CYAN}" + "-"*35 + f"{Color.RESET}")
         
         sub_pilihan = input("Pilih menu (1-2): ").strip()
         
@@ -383,29 +431,29 @@ def delete():
 
             target_id = input("Masukkan ID Mobil yang ingin dihapus: ").strip().upper()
             
-            # vakidate if id exists
+            # validate if id exists
             if target_id not in data_mobil:
-                print(f"\n[ERROR] Mobil dengan ID '{target_id}' tidak ditemukan di sistem!")
+                print(f"\n{Color.RED}[ERROR] Mobil dengan ID '{target_id}' tidak ditemukan di sistem!{Color.RESET}")
                 continue
             
             car = data_mobil[target_id]
-            print(f"\n[WARNING] Anda akan menghapus data: {car['nama_mobil']} ({target_id})")
+            print(f"\n{Color.YELLOW}[WARNING] Anda akan menghapus data: {car['nama_mobil']} ({target_id}){Color.RESET}")
             
             #double check
-            konfirmasi = input("Apakah anda yakin? (Y/N): ").strip().upper()
+            konfirmasi = input(f"Apakah anda yakin? ({Color.GREEN}Y{Color.RESET}/{Color.RED}N{Color.RESET}): ").strip().upper()
             
             if konfirmasi == "Y":
                 #remove key value pair
                 removed_car = data_mobil.pop(target_id)
-                print(f"\n[SUCCESS] Unit '{removed_car['nama_mobil']} ({target_id})' telah dihapus dari sistem!")
+                print(f"\n{Color.GREEN}[SUCCESS] Unit '{removed_car['nama_mobil']} ({target_id})' telah dihapus dari sistem!{Color.RESET}")
             else:
-                print("\n[Batal] Penghapusan unit dibatalkan oleh operator")
+                print(f"\n{Color.RED}[Batal] Penghapusan unit dibatalkan {Color.RESET}")
                 
         elif sub_pilihan == "2":
             print("\nKembali ke Main Menu...")
             break
         else:
-            print("\n[ERROR] Pilihan tidak valid! Masukkan angka 1 atau 2.")
+            print(f"\n{Color.YELLOW}[WARNING] Pilihan tidak valid! Masukkan angka 1 atau 2{Color.RESET}")
 
 while True:
     main_menu()
@@ -413,10 +461,10 @@ while True:
     usr_inp = input("Masukkan menu yang ingin dijalankan (1-5): ")
     
     if usr_inp == "1":
-        sub_menu_read()
+        read()
 
     elif usr_inp == "2":
-        sub_menu_create()
+        create()
 
     elif usr_inp == "3":
         update()
@@ -425,7 +473,7 @@ while True:
         delete()
 
     elif usr_inp == "5":
-        print("\nTerima kasih telah menggunakan sistem showroom kami. Goodbye!")
+        print(f"\n{Color.BOLD}Exiting Program...\nGoodbye!\n{Color.RESET}")
         break
     else:
-        print("\n[ERROR] Pilihan tidak valid! Masukkan angka 1 sampai 5.")
+        print(f"\n{Color.YELLOW}[WARNING] Pilihan tidak valid! Masukkan angka 1 sampai 5{Color.RESET}")
