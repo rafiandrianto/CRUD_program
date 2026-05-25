@@ -1,60 +1,62 @@
-# Python CRUD Application for [Business Domain]
+# Python CRUD Application for Automotive Dealership
 
-A comprehensive Python application for managing [Data Entity] data with Create, Read, Update, and Delete (CRUD) operations.
+A comprehensive Python application for managing managing high value collector vehicle data with Create, Read, Update, and Delete (CRUD) operations.
 
 ## Business Understanding
 
-This project caters to the [Industry/Business Domain] industry, specifically addressing the need to manage [Data Entity] data efficiently. [Data Entity] plays a crucial role in [Explain the importance of data entity in business processes].
+This project caters to the Automotive Dealership & Vehicle Brokerage industry, specifically addressing the need to manage specialized high value automobile inventories (JDM, USDM, and EDM variants). Vehicle inventory management plays a crucial role in maintaining showroom logistics, ensuring correct asset pricing, tracking vehicle availability, and avoiding costly duplicate registry entries for multi-million and multi-billion Rupiah assets.
 
 **Benefits:**
 
-* Improved data accuracy and consistency
-* Streamlined data management processes
-* Enhanced decision-making through readily available data
-* ... (List additional benefits relevant to the business)
+* Automated ID generation (JDM-XXX, USD-XXX, EDM-XXX) eliminates manual indexing overlap
+* Real time data filtration and keyword lookups let sales operators isolate vehicle specs instantly during client inquiries
+* Localized trap loops combined with try except data validation that ensures alphabetical strings never corrupt decimal fields
+* Employs raw ANSI codes for terminal color styling, allowing the system to run on any machine without installing packages
 
 **Target Users:**
 
-This application is designed for [Target Users] (e.g., sales representatives, inventory managers, customer support agents) within the organization to facilitate their [Tasks/Activities] related to [Data Entity].
+This application is designed for Showroom Inventory Managers, Luxury Car Brokers, and Dealership Operators within the organization to facilitate their daily data maintenance tasks, price adjustment processing, and client inventory lookups related to available vehicles
 
 ## Features
 
 * **Create:**
-    * Add new [Data Entity] entries with essential details like [List relevant fields].
-    * Implement validation rules to ensure data integrity (if applicable, e.g., unique identifiers, data type checks).
+    * Add new vehicle entries with details like Category, Model Name, Assembly Year, Engine Series, and Retail Price
+    * Automatically evaluates current database records to assign the next sequential primary key identifier
+    * Features localized validation loops to guarantee category (JDM, USD, EDM) and numerical type validation for years and pricing
+
 * **Read:**
-    * Search and retrieve specific [Data Entity] records by applying filters based on [Searchable fields].
-    * Display comprehensive information for each [Data Entity] in a user-friendly format.
-    * Integrate pagination and sorting capabilities for large datasets (if applicable).
+    * Displays a colored and structured tabular dashboard featuring comma separated thousands formatting for financial clarity
+    * Search and isolate specific vehicle records via a complete primary key ID match
+    * Filter inventory sheets instantly by distinct geographical regions (JDM, USD, EDM)
+    * Executes case insensitive partial keyword scans across both model names and engine codes simultaneously (ex: searching "RS" or "2JZ")
+
 * **Update:**
-    * Modify existing [Data Entity] data to reflect changes in [Attributes/Properties].
-    * Provide clear confirmation or error messages based on update success or failure.
+    * Modify individual attributes of an existing vehicle record without forcing the re-entry of untouched parameters
+    * Localized string validation (Available, Reserved, Sold)
+    * Includes terminal confirmation steps (Y/N) before writing changes into memory
+
 * **Delete:**
-    * Allow for the removal of unwanted [Data Entity] records with appropriate authorization checks (if applicable).
-    * Implement soft delete functionality to prevent permanent data loss (optional, depending on business needs).
-    * Consider offering data archiving capabilities (optional).
-* **Security:**
-    * Implement user authentication and authorization mechanisms (if sensitive data is involved) to control access to different CRUD operations.
-    * ... (Specify additional security features as needed)
-* **Reporting:**
-    * Generate reports or summaries based on [Data Entity] data to support [Business Functions] (optional).
-    * Export data in various formats (e.g., CSV, Excel) for further analysis (optional).
+    * Removes unwanted or mistakenly added vehicle records from the memory registry
+
+* **Optimizations:**
+    * Allows operators to input 0 at primary prompts to immediately cancel execution flows and return safely to the dashboard
+    * Implements UI color (Green for success, Red for errors/deletions, Yellow for warnings, Cyan for borders, Blue for options) using standard ANSI sequences
+    
 
 ## Installation
 
 1. **Prerequisites:**
-    * Python version (specify the required version)
-    * Additional dependencies (list any required packages)
+    * Python version 3.6 or higher (required for formatted f-strings and standard dictionary ordering)
+    * Terminal environment supporting standard ANSI Escape Sequences
 
 2. **Installation:**
     ```bash
-    git clone https://github.com/<your-username>/<your-repo-name>.git
+    git clone https://github.com/rafiandrianto/CRUD_program.git
     cd <your-repo-name>
-    pip install -r requirements.txt  # If using a requirements.txt file
     ```
 
 3. **Database Setup (if applicable):**
-    Follow specific instructions for configuring your database connection, aligning with the business's chosen database management system.
+    This system utilizes an in memory nested dictionary initialized with six iconic placeholder vehicles upon startup. No relational database connections or structural migrations are required to run the environment
 
 ## Usage
 
@@ -64,17 +66,18 @@ This application is designed for [Target Users] (e.g., sales representatives, in
     ```
 
 2. **CRUD Operations:**
-    * **Create:** Add a new [Data Entity] record, for example, a new customer in a customer management system, providing details like name, contact information, and preferences.
-    * **Read:** Search and retrieve customer information by name, ID, or other relevant criteria.
-    * **Update:** Modify customer details, such as updating their address or contact details.
-    * **Delete:** Remove a customer record from the system (with appropriate authorization, if applicable).
+    * **Create:** Navigate to Option 2. Provide the desired asset category (ex: JDM), let the system generate your unique sequential ID, input model parameters, review the visual summary, and confirm the write command.
+    * **Read:** Navigate to Option 1. Select whether to print the complete showroom grid, filter by a distinct category, lookup a standalone record, or use the partial search engine to look for model name or engine type.
+    * **Update:** Navigate to Option 3. Input your target vehicle's ID, view its current parameters, pick an attribute number to adjust, define the new field parameter, and save.
+    * **Delete:** Navigate to Option 4. Input the vehicle ID to drop, review the deletion alert banner, and confirm to permanently delete the vehicle out of the system.
 
 ## Data Model
-This project utilizes a [Data Structure] (e.g., relational database, JSON documents) to represent [Data Entity] data. The following fields are typically stored:
-   * [Field 1]: (Data type) - Description of the field's purpose in the business context.
-   * [Field 2]: (Data type) - Description of the field's purpose in the business context.
-   * ... (List all relevant fields)
+This project utilizes a Python Nested Dictionary (dict) structure to represent vehicular data. The structure assigns a distinct alphanumeric token string as the primary key mapped to an internal dictionary object containing the following data fields:
+   * kategori: (str) - The regional classification tag of the vehicle; strictly limited to "JDM", "USDM", or "EDM" (for now)
+   * nama_mobil: (str) - The official commercial name of the vehicle
+   * tahun: (int) - The manufacturing or assembly year of the vehicle (bounded between 1900 and 2026)
+   * mesin: (str) - The specific internal combustion engine code or variant designator
+   * harga: (float) - The calculated retail value of the unit represented in Indonesian Rupiah (IDR)
+   * status_unit: (str) - The trade state of the asset; limited to "Available", "Reserved", or "Sold"
 
-## Contributing
-We welcome contributions to this project! Please feel free to open a pull request, sent to [your_email] or submit an issue if you encounter any problems or have suggestions for improvements.
 
