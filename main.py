@@ -126,7 +126,7 @@ def read():
         print(f"{Color.BLUE}5.{Color.RESET} Kembali ke Menu Menu")
         print(f"{Color.CYAN}{Color.BOLD}" + "-"*35 + f"{Color.RESET}")
         
-        sub_pilihan = input("Pilih menu (1-4): ")
+        sub_pilihan = input("Pilih menu (1-5): ")
         
         if sub_pilihan == "1":
             show_table(data_mobil)
@@ -235,7 +235,7 @@ def create():
         if sub_pilihan == "1":
             #validate 
             while True:
-                kategori = input("Masukkan Kategori (JDM / USDM / EDM): ").strip().upper()
+                kategori = input("Masukkan kategori (JDM / USDM / EDM): ").strip().upper()
 
                 if kategori == "0": #cancel
                     break
@@ -356,28 +356,28 @@ def update():
             
             if pilihan_field == "1":
                 field_key = "nama_mobil"
-                new_value = input("Masukkan Nama/Model Mobil baru: ").strip()
+                new_value = input("Masukkan nama/model mobil baru: ").strip()
                 
             elif pilihan_field == "2":
                 field_key = "tahun"
                 while True:
                     try:
-                        new_value = int(input("Masukkan Tahun Perakitan baru: ").strip())
+                        new_value = int(input("Masukkan tahun pembuatan baru: ").strip())
                         if 1900 <= new_value <= 2026:
                             break
-                        print(f"{Color.YELLOW}[WARNING] Tahun harus masuk akal (1900 - 2026)! {Color.RESET}")
+                        print(f"{Color.YELLOW}[WARNING] Tahun harus 1900 - 2026 {Color.RESET}")
                     except ValueError:
-                        print(f"{Color.YELLOW}[WARNING] Input tidak valid! Tahun wajib berupa angka bulat {Color.RESET}")
+                        print(f"{Color.YELLOW}[WARNING] Tahun wajib berupa angka bulat {Color.RESET}")
                         
             elif pilihan_field == "3":
                 field_key = "mesin"
-                new_value = input("Masukkan Tipe/Seri Mesin baru: ").strip()
+                new_value = input("Masukkan tipe/seri mesin baru: ").strip()
                 
             elif pilihan_field == "4":
                 field_key = "harga"
                 while True:
                     try:
-                        new_value = float(input("Masukkan Harga Unit baru (IDR): ").strip())
+                        new_value = float(input("Masukkan harga unit baru (IDR): ").strip())
                         if new_value > 0:
                             break
                         print(f"{Color.YELLOW}[WARNING] Harga harus lebih besar dari Rp 0!{Color.RESET}")
@@ -387,17 +387,17 @@ def update():
             elif pilihan_field == "5":
                 field_key = "status_unit"
                 while True:
-                    new_value = input("Masukkan Status baru (Available / Reserved / Sold): ").strip().capitalize()
+                    new_value = input("Masukkan status baru (Available / Reserved / Sold): ").strip().capitalize()
                     if new_value in ["Available", "Reserved", "Sold"]:
                         break
-                    print(f"{Color.YELLOW}[WARNING] Status tidak valid! Pilih Available, Reserved, atau Sold{Color.RESET}")
+                    print(f"{Color.YELLOW}[WARNING] Status tidak valid! pilih Available, Reserved, atau Sold{Color.RESET}")
             else:
                 print(f"\n{Color.YELLOW}[WARNING] Pilihan atribut tidak tersedia!{Color.RESET}")
                 continue
                 
             #validate
-            print(f"\nPerubahan Terdeteksi: Atribut '{field_key}' akan diganti menjadi '{new_value}'")
-            konfirmasi = input(f"Apakah Anda yakin ingin menyimpan perubahan ini? ({Color.GREEN}Y{Color.RESET}/{Color.RED}N{Color.RESET}): ").strip().upper()
+            print(f"\nPerubahan Atribut '{field_key}' akan diganti menjadi '{new_value}'")
+            konfirmasi = input(f"Apakah anda yakin ingin menyimpan perubahan ini? ({Color.GREEN}Y{Color.RESET}/{Color.RED}N{Color.RESET}): ").strip().upper()
             
             if konfirmasi == "Y":
                 #overwrite chosen key
@@ -476,4 +476,4 @@ while True:
         print(f"\n{Color.BOLD}Exiting Program...\nGoodbye!\n{Color.RESET}")
         break
     else:
-        print(f"\n{Color.YELLOW}[WARNING] Pilihan tidak valid! Masukkan angka 1 sampai 5{Color.RESET}")
+        print(f"\n{Color.YELLOW}[WARNING] Pilihan tidak valid! Masukkan angka 1-5{Color.RESET}")
