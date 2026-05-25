@@ -4,6 +4,7 @@
 # Developed by. Muhammad Rafi Andrianto
 # JCDS - 33
 
+import os
 
 class Color:
     RED = '\033[91m'
@@ -70,6 +71,56 @@ data_mobil = {
         "status_unit": "Available"
     }
 }
+
+def load_from_csv():
+    """
+    checks for an existing CSV database at startup, if found, overrides the hardcoded dictionary with the CSV file
+    """
+    global data_mobil
+    filename = "showroom_inventory.csv"
+    
+    #if the file doesnt exist, do nothing and keep the default hardcoded data
+    if not os.path.exists(filename):
+        return
+
+    try:
+        new_data = {}
+        with open(filename, mode="r", encoding="utf-8") as file:
+
+            next(file)
+            
+            for line in file:
+                line = line.strip()
+                if not line:
+                    continue  #skip empty lines
+                
+        
+                parts = line.split(",")
+                
+                #extract components based on CSV structure
+                car_id = parts[0]
+                kategori = parts[1]
+                nama_mobil = parts[2]
+                tahun = int(parts[3])       
+                mesin = parts[4]
+                harga = float(parts[5])   
+                status_unit = parts[6]
+                
+                #reconstruct the structure
+                new_data[car_id] = {
+                    "kategori": kategori,
+                    "nama_mobil": nama_mobil,
+                    "tahun": tahun,
+                    "mesin": mesin,
+                    "harga": harga,
+                    "status_unit": status_unit
+                }
+                
+        #Override data_mobil with CSV
+        data_mobil = new_data
+        print(f"{Color.GREEN}\n[SYSTEM] Berhasil memuat data dari '{filename}'{Color.RESET}")
+    except Exception as e:
+        print(f"{Color.YELLOW}[WARNING] Gagal memuat data dari CSV ({e}). System akan memakai data lama{Color.RESET}")
 
 
 def main_menu():
@@ -455,6 +506,26 @@ def delete():
         else:
             print(f"\n{Color.YELLOW}[WARNING] Pilihan tidak valid! Masukkan angka 1-2{Color.RESET}")
 
+def save_to_csv():
+    """
+    saves current state of data_mobil into a CSV file
+    """
+    filename = "showroom_inventory.csv"
+    try:
+        with open(filename, mode="w", encoding="utf-8") as file:
+            #write header
+            file.write("ID,kategori,nama_mobil,tahun,mesin,harga,status_unit\n")
+            
+            #write rows
+            for key, value in data_mobil.items():
+                line = f"{key},{value['kategori']},{value['nama_mobil']},{value['tahun']},{value['mesin']},{value['harga']},{value['status_unit']}\n"
+                file.write(line)
+        print(f"\n{Color.GREEN}[SYSTEM] Data telah di backup di '{filename}'!{Color.RESET}")
+    except Exception as e:
+        print(f"\n{Color.RED}[ERROR] Gagal backup data ke CSV {e}{Color.RESET}")
+
+load_from_csv()
+
 while True:
     main_menu()
     
@@ -473,6 +544,7 @@ while True:
         delete()
 
     elif usr_inp == "5":
+        save_to_csv()
         print(f"\n{Color.BOLD}Exiting Program...\nGoodbye!\n{Color.RESET}")
         break
     else:
